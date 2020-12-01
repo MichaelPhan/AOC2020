@@ -52,16 +52,6 @@ yarn start day1
 
 If the day folder does not exist, it will be created from template.
 
-## Join my leaderboard
-
-You can [join](https://adventofcode.com/2019/leaderboard/private) my private leaderboard fo JS/TS programmers:
-
-Code:
-
-```
-107172-b51ab08f
-```
-
 ## Languages used:
 
 - TypeScript
