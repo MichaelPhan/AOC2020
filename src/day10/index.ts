@@ -22,37 +22,41 @@ const goA = (input) => {
     .reduce((acc, val, indx, inp) => (indx !== 2 ? acc : inp[0] * inp[2]));
 };
 
-const goB = (input) => {
-  const parsedInput = [
-    // 0,
-    ...parseInput(input),
-    // parseInput(input).slice(-1)[0] + 3,
-  ];
-  let groupedTotal = [];
-  let runningTotal = [];
-  for (let i = 0; i < parsedInput.length; i++) {
-    const currentNum = parsedInput[i];
-    const prevNum = parsedInput[i - 1];
-    // if (!runningTotal.includes(currentNum)) runningTotal.push(currentNum);
-
-    if (i > 1 && currentNum - prevNum === 1) {
-      runningTotal.push(currentNum);
-    } else if (!!runningTotal.length) {
-      groupedTotal.push(runningTotal);
-      runningTotal = [];
+const getMultiplier = (groupLength)=>{
+  let multiplier = 1;
+  let incr = 1;
+  for (let i = 0; i < groupLength; i++) {
+    if (i >= 2) {
+      multiplier += incr;
+      incr++;
     }
-    // else {
-    // runningTotal = [currentNum];
-    // }
   }
 
-  // console.log("aha!", parsedInput);
-  console.log("oh!", groupedTotal);
-  return groupedTotal.reduce(
-    (acc, group, indx, inp) =>
-      (acc += group.length * inp[indx - 1]?.length || 0) && acc,
-    0
-  );
+  return multiplier;
+}
+const goB = (input) => {
+  const parsedInput = [
+    0,
+    ...parseInput(input),
+    parseInput(input).slice(-1)[0] + 3,
+  ];
+  let groupedTotal = [];
+  let runningTotal = [parsedInput[0]];
+  for (let i = 0; i < parsedInput.length; i++) {
+    const currentNum = parsedInput[i];
+    const nextNum = parsedInput[i + 1];
+
+    if (nextNum - currentNum <= 2) {
+      runningTotal.push(nextNum);
+    } else if (!!runningTotal.length) {
+      groupedTotal.push(runningTotal);
+      runningTotal = [nextNum];
+    }
+  }
+
+  return groupedTotal.reduce((acc, group, indx, inp) => {
+    return acc *= getMultiplier(group.length);
+  }, 1);
   // groupedTotal.filter((group) => group.length > 2)
 };
 
@@ -111,5 +115,5 @@ test(
 
 console.time("Time");
 console.log("Solution to part 1:", goA(input));
-// console.log("Solution to part 2:", goB(input));
+console.log("Solution to part 2:", goB(input));
 console.timeEnd("Time");
