@@ -22,7 +22,11 @@ const goA = (input) => {
     .reduce((acc, val, indx, inp) => (indx !== 2 ? acc : inp[0] * inp[2]));
 };
 
+
+const dict = []
 const getMultiplier = (groupLength)=>{
+  if(dict[groupLength] != undefined) return dict[groupLength];
+
   let multiplier = 1;
   let incr = 1;
   for (let i = 0; i < groupLength; i++) {
@@ -31,9 +35,10 @@ const getMultiplier = (groupLength)=>{
       incr++;
     }
   }
-
+  dict[groupLength] = multiplier
   return multiplier;
 }
+
 const goB = (input) => {
   const parsedInput = [
     0,
@@ -42,6 +47,8 @@ const goB = (input) => {
   ];
   let groupedTotal = [];
   let runningTotal = [parsedInput[0]];
+
+  // grouping together consecutive numbers
   for (let i = 0; i < parsedInput.length; i++) {
     const currentNum = parsedInput[i];
     const nextNum = parsedInput[i + 1];
@@ -54,10 +61,9 @@ const goB = (input) => {
     }
   }
 
-  return groupedTotal.reduce((acc, group, indx, inp) => {
+  return groupedTotal.reduce((acc, group) => {
     return acc *= getMultiplier(group.length);
   }, 1);
-  // groupedTotal.filter((group) => group.length > 2)
 };
 
 /* Tests */
