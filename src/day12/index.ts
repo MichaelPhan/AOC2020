@@ -16,7 +16,11 @@ enum DIR {
 }
 type ShipInfo = {
   dir: DIR;
-  totalHeading: number;
+  x: number;
+  y: number;
+};
+
+type WaypointInfo = {
   x: number;
   y: number;
 };
@@ -40,10 +44,10 @@ const execInstruct = (
   let currentHeading = compass[ship.dir]; // Number based on DIR
   switch (dir) {
     case DIR.NORTH:
-      ship.y -= value;
+      ship.y += value;
       break;
     case DIR.SOUTH:
-      ship.y += value;
+      ship.y -= value;
       break;
     case DIR.EAST:
       ship.x += value;
@@ -55,16 +59,14 @@ const execInstruct = (
       execInstruct(ship, { dir: ship.dir, value }, false);
       break;
     case DIR.LEFT:
-      ship.totalHeading -= value;
       currentHeading -= value;
       break;
     case DIR.RIGHT:
-      ship.totalHeading += value;
       currentHeading += value;
       break;
   }
 
-  if(log) { 
+  if (log) {
     console.log("set", dir, value, " - ship:", ship);
   }
 
@@ -77,6 +79,57 @@ const execInstruct = (
   if (currentHeading === 630) currentHeading = 270;
 
   ship.dir = compass[currentHeading];
+};
+
+const execInstruct2 = (
+  ship: ShipInfo,
+  waypoint: WaypointInfo,
+  { dir, value }: { dir: DIR; value: number }
+) => {
+  switch (dir) {
+    case DIR.NORTH:
+      waypoint.y += value;
+      break;
+    case DIR.SOUTH:
+      waypoint.y -= value;
+      break;
+    case DIR.EAST:
+      waypoint.x += value;
+      break;
+    case DIR.WEST:
+      waypoint.x -= value;
+      break;
+    case DIR.FORWARD:
+      ship.x += value * waypoint.x;
+      ship.y += value * waypoint.y;
+      break;
+    case DIR.LEFT:
+    case DIR.RIGHT:
+      const oldWaypoint = { ...waypoint };
+
+      if (
+        (value === 90 && dir === DIR.LEFT) ||
+        (value === 270 && dir === DIR.RIGHT)
+      ) {
+        // 90 degree left or 270 right around center point = (A,B) -> (-B, A)
+
+        waypoint.x = -oldWaypoint.y;
+        waypoint.y = oldWaypoint.x;
+      } else if (value === 180) {
+        // 180 (A,B) -> (-A, -B)
+
+        waypoint.x = -oldWaypoint.x;
+        waypoint.y = -oldWaypoint.y;
+      } else if (
+        (value === 270 && dir === DIR.LEFT) ||
+        (value === 90 && dir === DIR.RIGHT)
+      ) {
+        // 90 degree right or 270 left around center point = (A,B) -> (B, -A)
+        waypoint.x = oldWaypoint.y;
+        waypoint.y = -oldWaypoint.x;
+      }
+      break;
+  }
 };
 
 const parseInstructions = (input) =>
@@ -102,7 +155,20 @@ const goA = (input) => {
 };
 
 const goB = (input) => {
-  return 0;
+  const ship = {
+    dir: DIR.EAST,
+    x: 0,
+    y: 0,
+  };
+  const waypoint = {
+    x: 10,
+    y: 1,
+  };
+
+  parseInstructions(input).forEach((instruction) =>
+    execInstruct2(ship, waypoint, instruction)
+  );
+  return Math.abs(ship.x) + Math.abs(ship.y);
 };
 
 /* Tests */
@@ -119,6 +185,6 @@ test(
 /* Results */
 
 console.time("Time");
-console.log("Solution to part 1:", goA(input));
-// console.log("Solution to part 2:", goB(input))
+console.log("Solution to part 1:", goA(input)); // 998
+console.log("Solution to part 2:", goB(input)); // 71586
 console.timeEnd("Time");
