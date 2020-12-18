@@ -7,9 +7,8 @@ const input = prepareInput(readInput());
 const parseParenths = (input, reduceInput) => {
   let extracted = input;
   if (input.lastIndexOf("(") > -1) {
-    let tar;
-    // getting the first range
-    tar = extracted.substr(extracted.lastIndexOf("(") + 1);
+    // getting the last range
+    let tar = extracted.substr(extracted.lastIndexOf("(") + 1);
     tar = tar.substr(0, tar.indexOf(")"));
 
     extracted = input.replace(`(${tar})`, reduceInput(tar));
