@@ -1,8 +1,8 @@
-# Advent of Code 2019 starter for JS/TS
+# Advent of Code  starter for JS/TS
 
 ## Intro
 
-This repo contains zero-setup environment for [Advent of Code](https://adventofcode.com/2019) challenges, with:
+This repo contains zero-setup environment for [Advent of Code](https://adventofcode.com/) challenges, with:
 
 - automatic creation of a challenge template,
 - automatic execution of a challenge code (with reloads),
@@ -13,11 +13,11 @@ This repo contains zero-setup environment for [Advent of Code](https://adventofc
 Clone the repo and go to the created folder:
 
 ```
-git clone https://github.com/caderek/aoc-starter-ts.git aoc2019
+git clone https://github.com/caderek/aoc-starter-ts.git aoc
 ```
 
 ```
-cd aoc2019
+cd aoc
 ```
 
 Using NPM:
